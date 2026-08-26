@@ -28,4 +28,3 @@ dist-ssr
 .env
 .env.*
 !.env.example
-package-lock.json
