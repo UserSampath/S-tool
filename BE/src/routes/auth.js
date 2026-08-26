@@ -11,12 +11,13 @@ const router = express.Router();
 // PIN-only login is the weakest entry point: the PIN is the whole credential,
 // so it gets a tighter limit than the email + password route.
 const pinLimiter = rateLimit({
+  name: 'pin',
   windowMs: 15 * 60_000,
   max: 5,
   message: 'Too many PIN attempts, try again later',
 });
 
-const loginLimiter = rateLimit({ windowMs: 15 * 60_000, max: 20 });
+const loginLimiter = rateLimit({ name: 'login', windowMs: 15 * 60_000, max: 20 });
 
 // A public URL means anyone who finds it can open an account, and every
 // account can spend the Gemini quota. When SIGNUP_CODE is set, registration
@@ -26,6 +27,7 @@ const SIGNUP_CODE = process.env.SIGNUP_CODE || '';
 // Sign-up had no limit at all, which also made the invite code guessable at
 // whatever rate the network allowed.
 const registerLimiter = rateLimit({
+  name: 'register',
   windowMs: 60 * 60_000,
   max: 5,
   message: 'Too many sign-up attempts, try again later',

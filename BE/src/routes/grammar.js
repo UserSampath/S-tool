@@ -19,6 +19,7 @@ const HISTORY_LIMIT = 25;
 router.use(requireAuth);
 
 const limiter = rateLimit({
+  name: 'grammar',
   windowMs: 15 * 60_000,
   max: 40,
   message: 'Too many grammar checks. Wait a few minutes and try again.',

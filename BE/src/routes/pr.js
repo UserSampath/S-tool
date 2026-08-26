@@ -13,6 +13,7 @@ router.use(requireAuth);
 
 // Every call spends Gemini quota, same as the grammar helper.
 const limiter = rateLimit({
+  name: 'pr',
   windowMs: 15 * 60_000,
   max: 40,
   message: 'Too many generations. Wait a few minutes and try again.',

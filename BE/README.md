@@ -139,6 +139,52 @@ Guards: signed-in only, 40 requests per IP per 15 minutes, 12,000 characters of
 text, 500 characters of instructions, and a 45 second timeout. Every call spends
 real quota, so this is the one route where a loop in the client costs money.
 
+### Running it somewhere else
+
+The app runs two ways from one codebase.
+
+`src/server.js` is the long-running server: it connects to Mongo once, then
+listens. `api/index.js` is the serverless entry point for Vercel, where there
+is no boot step - a request can land on a container that has never connected,
+so every invocation awaits the shared connection promise first. On a warm
+container that promise has already resolved and the wait costs nothing.
+
+Both hand the request to the same `src/app.js`, so there is one implementation
+of the API rather than two that drift apart.
+
+`db/connect.js` caches its connection promise on `globalThis`, which outlives
+module state between invocations. Caching the promise rather than the finished
+connection also means two requests arriving together share one handshake
+instead of racing into two. `maxPoolSize` is deliberately small: every instance
+opens its own pool, and Atlas M0 allows 500 connections across the cluster.
+
+#### Rate limiting has two stores
+
+Counting in memory is exact and free, but only when one process sees every
+request. Spread over many short-lived instances that share nothing, an
+in-memory counter gives each instance its own private allowance and the limit
+stops meaning much.
+
+So `middleware/rateLimit.js` has a second store that keeps the counter in
+MongoDB, which every instance already talks to. The increment is one atomic
+round trip using the pipeline form of update, so the decision to start a new
+window happens inside the database - two instances hitting the same bucket at
+the same moment cannot both decide to reset it. A TTL index on `resetAt` lets
+MongoDB drop expired buckets, so that store needs no sweeper.
+
+Each limiter passes a `name`, which namespaces its bucket. Without it the PIN
+route (5 attempts) and the login route (20) would count into the same document
+for the same IP.
+
+The store auto-detects - Mongo on Vercel, memory otherwise - and
+`RATE_LIMIT_STORE` overrides it either way, which is what makes both paths
+testable on one machine.
+
+If the store cannot be reached the limiter **fails open**. Every limited route
+needs the database anyway, so a request that gets past a broken limiter is
+about to fail on its own merits; refusing here would only replace a clear
+error with a misleading 429.
+
 ### Day tasks
 
 The Today plan tool: one task list per calendar day, each task `todo`, `doing`
