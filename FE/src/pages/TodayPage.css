@@ -1,0 +1,527 @@
+/* ---------- today plan ---------- */
+
+/*
+ * Tokens, cards, fields and buttons come from styles/tool.css. The calendar, the
+ * day list and the backlog are what is specific here.
+ *
+ * Status has its own three colours, held apart from --accent on purpose: the
+ * accent is the tool's identity, while "in progress" has to mean the same shade
+ * of amber wherever it appears - in a task row and in a calendar bar alike.
+ */
+.today {
+  --st-todo: #b9b1cc;
+  --st-doing: #d97706;
+  --st-done: #047857;
+
+  width: min(100%, 1240px);
+}
+
+/* Calendar, the open day, then the backlog: past, present, and not yet. */
+.today-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 290px) minmax(0, 1fr) minmax(0, 310px);
+  gap: var(--sp-3);
+  align-items: start;
+  margin-top: var(--sp-3);
+}
+
+.today-layout > .card {
+  margin-top: 0;
+}
+
+/* Two columns first: the backlog drops below and runs the full width, so the
+   day list keeps the room it needs to stay readable. */
+@media (max-width: 1180px) {
+  .today-layout {
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+  }
+
+  .today-backlog {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 780px) {
+  .today-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- calendar ---------- */
+
+.today .today-calendar {
+  position: sticky;
+  top: 84px;
+}
+
+.today .cal-month {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+  font-size: var(--fs-body);
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.today .cal-nav {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink-500);
+  cursor: pointer;
+}
+
+.today .cal-nav:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.today .cal-nav .icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* The left arrow is the same chevron, turned. */
+.today .cal-nav:first-child .icon {
+  transform: rotate(180deg);
+}
+
+.today .cal-weekdays,
+.today .cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.today .cal-weekdays {
+  margin-bottom: var(--sp-1);
+}
+
+.today .cal-weekdays span {
+  text-align: center;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.today .cal-day {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  aspect-ratio: 1;
+  padding: 0;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink-900);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s var(--ease),
+    color 0.15s var(--ease);
+}
+
+.today .cal-day:hover {
+  background: rgba(124, 58, 237, 0.08);
+}
+
+/* Days spilling in from the neighbouring months stay clickable but recede. */
+.today .cal-day[data-outside] {
+  color: #b9b1cc;
+}
+
+/* Today gets a ring; the selected day gets a fill. Both can be true at once,
+   which is the common case when the tool opens. */
+.today .cal-day[data-today] {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+.today .cal-day[data-selected] {
+  background: var(--accent);
+  color: #fff;
+}
+
+.today .cal-day[data-selected]:hover {
+  background: var(--accent);
+}
+
+.today .cal-num {
+  line-height: 1;
+}
+
+/* ---------- day indicator ---------- */
+
+/*
+ * A three-part proportion bar rather than a count: at 4px tall the useful
+ * question is "how much of that day is left", and a bar answers it without
+ * being read.
+ */
+.today .cal-bar {
+  display: flex;
+  width: 60%;
+  height: 3px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: rgba(124, 58, 237, 0.12);
+}
+
+.today .cal-bar i {
+  flex-basis: 0;
+  min-width: 0;
+}
+
+.today .cal-bar .is-done {
+  background: var(--st-done);
+}
+
+.today .cal-bar .is-doing {
+  background: var(--st-doing);
+}
+
+.today .cal-bar .is-todo {
+  background: var(--st-todo);
+}
+
+/* On the selected day the fill is the accent, so the bar has to lift off it. */
+.today .cal-day[data-selected] .cal-bar {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.today .cal-day[data-selected] .cal-bar i {
+  filter: brightness(1.9);
+}
+
+.today .cal-today {
+  width: 100%;
+  margin-top: var(--sp-2);
+}
+
+/* ---------- the day and backlog panels ---------- */
+
+.today .today-title {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.today .today-title h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+
+.today .today-counts {
+  margin-left: auto;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.today .today-add {
+  display: flex;
+  gap: var(--sp-1);
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+}
+
+.today .today-note {
+  display: block;
+  padding: 0 var(--sp-3) var(--sp-3);
+}
+
+/* The backlog is a holding pen, not the main event: it reads one step quieter
+   than the open day so the eye lands on the day first. */
+.today .today-backlog {
+  background: rgba(124, 58, 237, 0.035);
+}
+
+.today .backlog-chip {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-sm);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.today .backlog-chip .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.today .backlog-refuse {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* ---------- tasks ---------- */
+
+.today .day-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--sp-3) var(--sp-3);
+  display: grid;
+  gap: var(--sp-1);
+}
+
+/* With no rows the list contributes only its own bottom padding, which would
+   sit under the empty-state line and look like a stray gap. */
+.today .day-list:empty {
+  padding-bottom: 0;
+}
+
+/*
+ * The two action columns are fixed rather than auto so a row without a "move"
+ * button - anything already started - still lines its delete up with the rows
+ * above and below it.
+ */
+.today .day-task {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto 26px 26px;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.8);
+  transition:
+    border-color 0.18s var(--ease),
+    background 0.18s var(--ease),
+    opacity 0.18s var(--ease);
+}
+
+.today .backlog-task {
+  grid-template-columns: auto minmax(0, 1fr) 26px 26px;
+}
+
+.today .day-task:hover {
+  border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+  background: #fff;
+}
+
+.today .day-task[data-status="done"] {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- dragging ---------- */
+
+.today .day-grip {
+  display: grid;
+  place-items: center;
+  color: #cdc6dc;
+  cursor: grab;
+}
+
+.today .day-task:hover .day-grip {
+  color: var(--ink-500);
+}
+
+.today .day-grip .icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* The row being carried stays in place, faded, so the list does not jump
+   about while the pointer is still deciding where to put it. */
+.today .day-task[data-dragging] {
+  opacity: 0.4;
+}
+
+/* Where it will land. A line between rows, not a gap that opens up: the list
+   keeps its shape and only the insertion point moves. */
+.today .day-task[data-drop-before]::before,
+.today .day-list[data-drop-end]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.today .day-task[data-drop-before]::before {
+  top: -5px;
+}
+
+/* The end of the list needs a line too, and the list is the only thing that
+   knows where its end is. */
+.today .day-list {
+  position: relative;
+}
+
+.today .day-list[data-drop-end]::after {
+  position: static;
+  display: block;
+  margin-top: 2px;
+}
+
+/* The panel being aimed at, and the panel refusing. */
+.today .card[data-drop-into] {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.today .card[data-drop-blocked] {
+  border-color: color-mix(in srgb, var(--danger) 50%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+/* ---------- status ---------- */
+
+.today .day-status {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  color: var(--st-todo);
+}
+
+.today .day-task[data-status="doing"] .day-status {
+  color: var(--st-doing);
+}
+
+.today .day-task[data-status="done"] .day-status {
+  color: var(--st-done);
+}
+
+.today .day-status:hover {
+  background: rgba(124, 58, 237, 0.08);
+}
+
+.today .day-status .icon {
+  width: 19px;
+  height: 19px;
+}
+
+.today .day-task-title,
+.today .day-task-input {
+  min-width: 0;
+  width: 100%;
+  padding: 0.15rem 0.2rem;
+  text-align: left;
+  font: inherit;
+  font-size: var(--fs-body);
+  color: var(--ink-900);
+}
+
+.today .day-task-title {
+  border: none;
+  background: transparent;
+  border-radius: var(--r-xs);
+  cursor: text;
+  overflow-wrap: anywhere;
+}
+
+.today .day-task-title:hover {
+  background: rgba(124, 58, 237, 0.06);
+}
+
+.today .day-task[data-status="done"] .day-task-title {
+  color: var(--ink-500);
+  text-decoration: line-through;
+  text-decoration-color: rgba(107, 98, 128, 0.5);
+}
+
+.today .day-task-input {
+  border: none;
+  border-bottom: 1.5px solid var(--accent);
+  border-radius: 0;
+  background: transparent;
+  outline: none;
+}
+
+/* The word alongside the glyph, so status never rests on colour alone. */
+.today .day-task-tag {
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  white-space: nowrap;
+  background: rgba(185, 177, 204, 0.18);
+  color: var(--ink-500);
+}
+
+.today .day-task[data-status="doing"] .day-task-tag {
+  background: rgba(217, 119, 6, 0.14);
+  color: var(--st-doing);
+}
+
+.today .day-task[data-status="done"] .day-task-tag {
+  background: rgba(4, 120, 87, 0.13);
+  color: var(--st-done);
+}
+
+/* ---------- row actions ---------- */
+
+/* The click-sized alternative to a drag, for anyone who would rather not. */
+.today .day-send,
+.today .day-delete {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: transparent;
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.today .day-task:hover .day-send,
+.today .day-task:focus-within .day-send,
+.today .day-task:hover .day-delete,
+.today .day-task:focus-within .day-delete {
+  color: #b9b1cc;
+}
+
+.today .day-send:hover {
+  background: var(--accent-soft);
+  color: var(--accent) !important;
+}
+
+.today .day-delete:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--danger) !important;
+}
+
+.today .day-delete[data-armed] {
+  width: auto;
+  padding: 0 0.35rem;
+  background: var(--danger);
+  color: #fff !important;
+}
+
+.today .day-send .icon,
+.today .day-delete .icon {
+  width: 14px;
+  height: 14px;
+}
+
+@media (max-width: 560px) {
+  .today .day-task {
+    grid-template-columns: auto auto minmax(0, 1fr) 26px 26px;
+  }
+
+  /* The word is the first thing to go when the row runs out of room; the
+     glyph and the strikethrough still carry the status. */
+  .today .day-task-tag {
+    display: none;
+  }
+}

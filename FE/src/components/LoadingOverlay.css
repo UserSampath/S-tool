@@ -1,0 +1,204 @@
+/* ---------- full page loading veil ---------- */
+
+.veil {
+  --accent: #6d28d9;
+  --accent-soft: rgba(139, 92, 246, 0.2);
+
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+
+  display: grid;
+  place-content: center;
+
+  /* Barely there, and no blur: the page behind stays readable so you can still
+     see the text being worked on. The veil is only here to catch clicks and
+     say that something is happening. */
+  background: rgba(250, 248, 255, 0.35);
+
+  animation: veil-in 0.2s ease both;
+}
+
+.veil[data-accent="teal"] {
+  --accent: #0d9488;
+  --accent-soft: rgba(13, 148, 136, 0.2);
+}
+
+.veil[data-accent="amber"] {
+  --accent: #b45309;
+  --accent-soft: rgba(245, 158, 11, 0.24);
+}
+
+.veil[data-accent="rose"] {
+  --accent: #be123c;
+  --accent-soft: rgba(244, 63, 94, 0.2);
+}
+
+.veil[data-accent="sky"] {
+  --accent: #0369a1;
+  --accent-soft: rgba(14, 165, 233, 0.2);
+}
+
+.veil[data-accent="emerald"] {
+  --accent: #047857;
+  --accent-soft: rgba(16, 185, 129, 0.22);
+}
+
+@keyframes veil-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/*
+ * The spinner sits on its own small panel rather than floating loose on the
+ * page. Against an unblurred background a bare spinner gets lost in whatever
+ * happens to be behind it; a card keeps it legible over any content.
+ */
+.veil-card {
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1.9rem;
+  border: 1px solid rgba(124, 58, 237, 0.14);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 22px 50px -24px rgba(49, 20, 94, 0.4);
+  animation: veil-pop 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes veil-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+}
+
+/* ---------- spinner ---------- */
+
+.veil-spinner {
+  width: 46px;
+  height: 46px;
+  animation: veil-rotate 1.9s linear infinite;
+}
+
+.veil-spinner circle {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.veil-track {
+  stroke: var(--accent-soft);
+}
+
+/*
+ * Circle r=20, so the circumference is about 126. The dash pattern sweeps from
+ * a dot to a long arc and back, while the svg itself rotates - together they
+ * give the arc its chasing, easing motion.
+ */
+.veil-arc {
+  stroke: var(--accent);
+  stroke-dasharray: 1 126;
+  stroke-dashoffset: 0;
+  animation: veil-dash 1.5s ease-in-out infinite;
+}
+
+@keyframes veil-rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes veil-dash {
+  0% {
+    stroke-dasharray: 1 126;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 84 126;
+    stroke-dashoffset: -28;
+  }
+  100% {
+    stroke-dasharray: 84 126;
+    stroke-dashoffset: -125;
+  }
+}
+
+/* ---------- label ---------- */
+
+.veil-label {
+  display: inline-flex;
+  align-items: baseline;
+  margin: 0;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink-700, #2a1d3d);
+}
+
+/* Dots animate separately so the label text itself never shifts position. */
+.veil-dots {
+  display: inline-flex;
+  gap: 2px;
+  margin-left: 3px;
+}
+
+.veil-dots i {
+  width: 3px;
+  height: 3px;
+  margin-bottom: 1px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.25;
+  animation: veil-dot 1.2s ease-in-out infinite;
+}
+
+.veil-dots i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.veil-dots i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+@keyframes veil-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+/* ---------- reduced motion ---------- */
+
+/*
+ * Reduced motion means less movement, not a frozen picture - a still spinner
+ * reads as a crash. The rotation and the entrance go; the arc keeps a slow,
+ * steady pulse so the page still says it is busy.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .veil,
+  .veil-card,
+  .veil-spinner,
+  .veil-dots i {
+    animation: none;
+  }
+
+  .veil-arc {
+    stroke-dasharray: 84 126;
+    animation: veil-pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes veil-pulse {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}

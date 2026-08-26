@@ -1,0 +1,113 @@
+/* ---------- PR generator ---------- */
+
+/*
+ * Tokens, cards, blocks, fields, buttons and the action bar come from
+ * styles/tool.css. Only the checkbox row and the shape of the results are
+ * specific to this page.
+ */
+
+.pr .pr-details {
+  min-height: 150px;
+}
+
+/* ---------- output checkboxes ---------- */
+
+.pr .pr-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+/* Each option is a target in its own right rather than a bare tick beside a
+   word - the whole pill toggles, which is a far easier thing to hit. */
+.pr .pr-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0.45rem 0.8rem 0.45rem 0.6rem;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition:
+    border-color 0.18s var(--ease),
+    background 0.18s var(--ease);
+}
+
+.pr .pr-option:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.pr .pr-option[data-on] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* The real checkbox stays in the DOM for keyboard and screen readers; the
+   visible box is drawn beside it. */
+.pr .pr-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.pr .pr-box {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid rgba(124, 58, 237, 0.35);
+  border-radius: var(--r-xs);
+  background: #fff;
+  color: transparent;
+  transition:
+    background 0.16s var(--ease),
+    border-color 0.16s var(--ease);
+}
+
+.pr .pr-box .icon {
+  width: 11px;
+  height: 11px;
+  stroke-width: 3.2;
+}
+
+.pr .pr-option[data-on] .pr-box {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.pr .pr-option input:focus-visible + .pr-box {
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.pr .pr-option-label {
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  color: var(--ink-500);
+}
+
+.pr .pr-option[data-on] .pr-option-label {
+  color: var(--accent);
+}
+
+/* ---------- results ---------- */
+
+/* A branch name and a commit message are one line each, meant to be pasted
+   into a terminal. Giving them a tinted single-line strip makes them read as a
+   value to copy rather than a paragraph to read. */
+.pr .output[data-single] {
+  padding: 0.75rem var(--sp-3);
+  background: rgba(246, 243, 255, 0.7);
+  white-space: pre;
+  overflow-x: auto;
+  font-size: var(--fs-out);
+}
+
+/* The description is a markdown document, so it keeps its own scroll rather
+   than pushing the page to an awkward length. */
+.pr .card-result .output:not([data-single]) {
+  max-height: 520px;
+  overflow: auto;
+}

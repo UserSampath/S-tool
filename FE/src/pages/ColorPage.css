@@ -1,0 +1,310 @@
+/* ---------- colour palette ---------- */
+
+/*
+ * Tokens, cards, blocks, fields and buttons come from styles/tool.css. What is
+ * specific here is the preview, the channel sliders and the swatch grids.
+ */
+
+.colour {
+  --mono: "Cascadia Code", Consolas, "SF Mono", monospace;
+
+  width: min(100%, 860px);
+}
+
+/* ---------- preview ---------- */
+
+/*
+ * The colour fills the top of the card and its own label is drawn in whichever
+ * of black or white is more readable on it - so the preview is also the
+ * legibility check, rather than a separate widget saying the same thing.
+ */
+.colour .colour-preview {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  padding: 2.4rem var(--sp-3) 1.1rem;
+  background: var(--picked);
+  color: var(--ink);
+  transition: background 0.12s linear;
+}
+
+.colour .colour-preview-hex {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.colour .colour-preview-note {
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+/* ---------- picking ---------- */
+
+.colour .colour-pick {
+  align-items: center;
+}
+
+/* The native picker is a small square of the current colour; the browser's own
+   swatch chrome is hidden so it matches everything else on the page. */
+.colour .colour-native {
+  position: relative;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-md);
+  background: var(--picked);
+  box-shadow: inset 0 0 0 1px rgba(23, 16, 43, 0.15);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.colour .colour-native input {
+  position: absolute;
+  inset: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  padding: 0;
+  border: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.colour .colour-hex {
+  font-family: var(--mono);
+  text-transform: uppercase;
+}
+
+/* ---------- channel sliders ---------- */
+
+.colour .colour-slider {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) 46px;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.colour .colour-slider output {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.colour .colour-slider input[type="range"] {
+  width: 100%;
+  height: 10px;
+  margin: 0;
+  border-radius: 999px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Each track previews what the slider does: the hue track is the spectrum, the
+   saturation and lightness tracks run through the current colour. Reading the
+   track is quicker than reading the number. */
+.colour [data-channel="h"] input[type="range"] {
+  background: linear-gradient(
+    to right,
+    #ff0000,
+    #ffff00,
+    #00ff00,
+    #00ffff,
+    #0000ff,
+    #ff00ff,
+    #ff0000
+  );
+}
+
+.colour [data-channel="s"] input[type="range"] {
+  background: linear-gradient(
+    to right,
+    hsl(var(--track-hue), 0%, 50%),
+    hsl(var(--track-hue), 100%, 50%)
+  );
+}
+
+.colour [data-channel="l"] input[type="range"] {
+  background: linear-gradient(
+    to right,
+    #000,
+    hsl(var(--track-hue), 100%, 50%),
+    #fff
+  );
+}
+
+.colour input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  background: var(--picked);
+  box-shadow: 0 1px 4px rgba(23, 16, 43, 0.45);
+  cursor: grab;
+}
+
+.colour input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid #fff;
+  border-radius: 50%;
+  background: var(--picked);
+  box-shadow: 0 1px 4px rgba(23, 16, 43, 0.45);
+  cursor: grab;
+}
+
+.colour input[type="range"]:focus-visible {
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ---------- copyable values ---------- */
+
+.colour .colour-values {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--sp-1);
+}
+
+.colour .colour-value {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  text-align: left;
+}
+
+.colour .colour-value:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.colour .colour-value code {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--mono);
+  font-size: var(--fs-body);
+  color: var(--ink-900);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.colour .colour-value .icon {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: #b9b1cc;
+}
+
+.colour .colour-value[data-copied] {
+  border-color: #047857;
+}
+
+.colour .colour-value[data-copied] .icon {
+  color: #047857;
+}
+
+/* ---------- swatch rows ---------- */
+
+.colour .swatch-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+.colour .swatch {
+  display: grid;
+  align-content: end;
+  gap: 1px;
+  flex: 1 1 92px;
+  min-width: 82px;
+  min-height: 74px;
+  padding: 0.45rem 0.5rem;
+  border: none;
+  border-radius: var(--r-sm);
+  background: var(--swatch);
+  /* The hex is drawn in whichever of black or white is readable on that
+     specific swatch, so every label stays legible across a whole ramp. */
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s var(--ease);
+}
+
+.colour .swatch:hover {
+  transform: translateY(-2px);
+}
+
+.colour .swatch-hex {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+.colour .swatch-label {
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+/* ---------- saved palette ---------- */
+
+.colour .saved {
+  position: relative;
+  display: flex;
+  flex: 1 1 92px;
+  min-width: 82px;
+}
+
+.colour .saved .swatch {
+  flex: 1;
+}
+
+.colour .saved-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--r-xs);
+  background: rgba(255, 255, 255, 0.85);
+  color: #6b6280;
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.15s var(--ease);
+}
+
+/* Hidden until the swatch is touched - a delete button on every colour turns a
+   palette into a wall of icons. */
+.colour .saved:hover .saved-remove,
+.colour .saved:focus-within .saved-remove {
+  opacity: 1;
+}
+
+.colour .saved-remove:hover {
+  background: #dc2626;
+  color: #fff;
+}
+
+.colour .saved-remove .icon {
+  width: 13px;
+  height: 13px;
+}
+
+@media (max-width: 560px) {
+  .colour .colour-slider {
+    grid-template-columns: 62px minmax(0, 1fr) 40px;
+  }
+}

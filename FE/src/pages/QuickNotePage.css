@@ -1,0 +1,168 @@
+/* ---------- quick note ---------- */
+
+/*
+ * Tokens, cards, blocks, fields and buttons come from styles/tool.css. Only the
+ * note cards themselves are specific to this page.
+ */
+
+.qn .qn-input {
+  min-height: 76px;
+}
+
+.qn .qn-status {
+  display: block;
+  margin-top: var(--sp-3);
+}
+
+/* ---------- the wall of notes ---------- */
+
+/*
+ * A masonry-ish column layout rather than a grid of equal boxes: quick notes
+ * are wildly different lengths, and forcing a one-liner into the same height as
+ * a paragraph wastes most of the screen.
+ */
+.qn .qn-list {
+  list-style: none;
+  margin: var(--sp-3) 0 0;
+  padding: 0;
+  columns: 2;
+  column-gap: var(--sp-2);
+}
+
+@media (max-width: 620px) {
+  .qn .qn-list {
+    columns: 1;
+  }
+}
+
+.qn .qn-card {
+  /* Stops a card being split across two columns mid-sentence. */
+  break-inside: avoid;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--sp-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.86);
+  overflow: hidden;
+  transition:
+    border-color 0.18s var(--ease),
+    background 0.18s var(--ease);
+}
+
+.qn .qn-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  background: #fff;
+}
+
+.qn .qn-card[data-editing] {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.qn .qn-text {
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--ink-900);
+  /* Line breaks typed into a note survive on the card. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+
+.qn .qn-edit {
+  margin: 0.5rem 0.55rem 0;
+  width: auto;
+  min-height: 90px;
+}
+
+/* ---------- card footer ---------- */
+
+.qn .qn-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 0.35rem 0.5rem 0.4rem 0.9rem;
+}
+
+.qn .qn-foot-actions {
+  display: inline-flex;
+  gap: 2px;
+}
+
+/* Actions stay out of sight until the card is touched - a row of buttons on
+   every note turns a wall of them into visual noise. */
+.qn .qn-action {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 0.35rem;
+  border: none;
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: transparent;
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.qn .qn-card:hover .qn-action,
+.qn .qn-card:focus-within .qn-action {
+  color: #b9b1cc;
+}
+
+.qn .qn-action:hover {
+  background: var(--accent-soft);
+  color: var(--accent) !important;
+}
+
+.qn .qn-action[data-copied] {
+  color: #047857 !important;
+}
+
+.qn .qn-delete:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--danger) !important;
+}
+
+.qn .qn-delete[data-armed] {
+  background: var(--danger);
+  color: #fff !important;
+}
+
+.qn .qn-action .icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* ---------- empty state ---------- */
+
+.qn .qn-empty {
+  margin-top: var(--sp-3);
+  padding: 2.2rem 1.5rem;
+  border: 1px dashed rgba(124, 58, 237, 0.22);
+  border-radius: var(--r-lg);
+  text-align: center;
+  color: var(--ink-500);
+  font-size: var(--fs-body);
+}
+
+.qn .qn-empty-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink-700);
+}
+
+.qn .qn-empty p:last-child {
+  margin: 0 auto;
+  max-width: 42ch;
+}

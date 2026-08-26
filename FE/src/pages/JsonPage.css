@@ -1,0 +1,123 @@
+/* ---------- JSON toolkit ---------- */
+
+/*
+ * Tokens, cards, blocks, fields and buttons come from styles/tool.css. Only the
+ * editor surfaces and the validity panel are specific to this page.
+ */
+
+.json {
+  --mono: "Cascadia Code", Consolas, "SF Mono", monospace;
+
+  width: min(100%, 900px);
+}
+
+/* JSON is code, so every surface that holds it is monospaced and does not
+   wrap - a wrapped line breaks the indentation that makes it readable. */
+.json .json-input {
+  min-height: 220px;
+  font-family: var(--mono);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+.json .json-sample {
+  justify-self: start;
+}
+
+/* ---------- verdict ---------- */
+
+.json .json-verdict {
+  padding: var(--sp-2) var(--sp-3);
+  border-top: 1px solid var(--line);
+  background: rgba(254, 226, 226, 0.4);
+}
+
+.json .json-verdict[data-valid] {
+  background: rgba(209, 250, 229, 0.4);
+}
+
+.json .json-verdict-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin: 0;
+  font-size: var(--fs-ui);
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.json .json-verdict[data-valid] .json-verdict-head {
+  color: #047857;
+}
+
+.json .json-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.json .json-where {
+  margin-left: auto;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+
+.json .json-stats {
+  margin: 0.3rem 0 0;
+}
+
+.json .json-message {
+  margin: 0.35rem 0 0;
+  font-size: var(--fs-body);
+  color: var(--ink-700);
+}
+
+/* The excerpt with the caret. Monospace is not optional here - the caret only
+   lines up with the character it points at in a fixed-width face. */
+.json .json-frame {
+  margin: var(--sp-2) 0 0;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--r-sm);
+  background: #17102b;
+  color: #e9e4ff;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+/* ---------- result ---------- */
+
+.json .card-tools .meta {
+  margin-right: var(--sp-1);
+  white-space: nowrap;
+}
+
+.json .json-output {
+  margin: 0;
+  padding: var(--sp-3);
+  max-height: 560px;
+  overflow: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--ink-900);
+  white-space: pre;
+  tab-size: 2;
+}
+
+@media (max-width: 620px) {
+  .json .card-tools {
+    flex-wrap: wrap;
+  }
+}

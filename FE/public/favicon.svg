@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="S tools">
+  <defs>
+    <linearGradient id="stools-badge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c084fc" />
+      <stop offset="0.55" stop-color="#8b5cf6" />
+      <stop offset="1" stop-color="#6d28d9" />
+    </linearGradient>
+    <linearGradient id="stools-shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35" />
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="18" fill="url(#stools-badge)" />
+  <rect width="64" height="32" rx="18" fill="url(#stools-shine)" />
+
+  <path
+    transform="translate(0 -2)"
+    d="M43 22c0-4.4-4.9-7-11-7s-11 2.6-11 7c0 8.5 22 4.5 22 13 0 4.4-4.9 7-11 7s-11-2.6-11-7"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="6"
+    stroke-linecap="round"
+  />
+
+  <g fill="#ffffff" fill-opacity="0.92" transform="translate(0 -2)">
+    <circle cx="23" cy="51" r="2.6" />
+    <circle cx="29" cy="51" r="2.6" />
+    <circle cx="35" cy="51" r="2.6" />
+    <circle cx="41" cy="51" r="2.6" />
+  </g>
+</svg>

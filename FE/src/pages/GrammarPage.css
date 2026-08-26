@@ -1,0 +1,213 @@
+/* ---------- grammar helper ---------- */
+
+/*
+ * Tokens, cards, blocks, fields, buttons and the action bar all come from
+ * styles/tool.css. Only the two controls unique to this page live here: the
+ * multi-select instruction chips, and the past-fixes list.
+ */
+
+/* ---------- instruction chips ---------- */
+
+.grammar .chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* The chip is a pair of buttons in one shell: the label toggles it on or off,
+   the x removes it for good. Keeping them separate means a mis-click costs a
+   toggle, never a deletion. */
+.grammar .chip {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+  transition:
+    border-color 0.18s var(--ease),
+    background 0.18s var(--ease);
+}
+
+.grammar .chip[data-active] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.grammar .chip-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0.32rem 0.45rem 0.32rem 0.65rem;
+  border: none;
+  background: transparent;
+  color: var(--ink-500);
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.grammar .chip[data-active] .chip-toggle {
+  color: var(--accent);
+}
+
+/* The tick holds its space when off, so a chip does not change width when it
+   is switched on. */
+.grammar .chip-tick {
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid rgba(124, 58, 237, 0.3);
+  border-radius: var(--r-xs);
+  color: transparent;
+}
+
+.grammar .chip-tick .icon {
+  width: 10px;
+  height: 10px;
+  stroke-width: 3.2;
+}
+
+.grammar .chip[data-active] .chip-tick {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.grammar .chip-remove {
+  padding: 0 0.5rem 0 0.3rem;
+  border: none;
+  background: transparent;
+  color: #b9b1cc;
+  font-size: var(--fs-body);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.grammar .chip-remove:hover {
+  background: rgba(220, 38, 38, 0.12);
+  color: var(--danger);
+}
+
+/* ---------- past fixes ---------- */
+
+.grammar .history-list {
+  list-style: none;
+  margin: 0 0 var(--sp-2);
+  padding: 0;
+  display: grid;
+  gap: var(--sp-1);
+}
+
+.grammar .history-entry {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+}
+
+.grammar .history-entry[data-open] {
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  background: #fff;
+}
+
+.grammar .history-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.grammar .history-summary:hover {
+  background: rgba(124, 58, 237, 0.05);
+}
+
+.grammar .history-preview {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-body);
+  color: var(--ink-900);
+}
+
+.grammar .history-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex: none;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--ink-500);
+}
+
+.grammar .history-detail {
+  display: grid;
+  gap: var(--sp-2);
+  padding: 0 0.75rem 0.75rem;
+}
+
+/* Input beside output on a wide screen, stacked when there is no room - the
+   whole point of the panel is comparing the two. */
+.grammar .history-panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-2);
+}
+
+.grammar .history-pane {
+  display: grid;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.grammar .history-pane p {
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: var(--r-sm);
+  background: rgba(246, 243, 255, 0.8);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 200px;
+  overflow: auto;
+}
+
+.grammar .history-used {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.grammar .history-used li {
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.08);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--ink-500);
+}
+
+.grammar .history-actions {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+@media (max-width: 560px) {
+  .grammar .history-panes {
+    grid-template-columns: 1fr;
+  }
+}

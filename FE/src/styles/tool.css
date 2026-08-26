@@ -1,0 +1,448 @@
+/* ---------- shared tool design system ---------- */
+
+/*
+ * Every tool screen opens with <section className="tool <name>"> and builds
+ * from the primitives below. They live here rather than inside one page so a
+ * second tool cannot quietly drift from the first: the sizes, radii, buttons
+ * and cards are defined once and used everywhere.
+ *
+ * If a new element needs a size, it takes one of these tokens rather than
+ * inventing a value - that is what keeps the pages looking related.
+ */
+.tool {
+  --accent: var(--violet-700);
+  --accent-soft: rgba(139, 92, 246, 0.12);
+  --line: rgba(124, 58, 237, 0.12);
+  --danger: #dc2626;
+
+  /* type scale */
+  --fs-meta: 0.72rem; /* counts, timestamps, tags, section headings */
+  --fs-ui: 0.8rem; /* every control: buttons, chips, selects */
+  --fs-body: 0.9rem; /* inputs, previews, body text */
+  --fs-out: 0.97rem; /* generated output, the thing you read closely */
+
+  /* corner radii */
+  --r-xs: 4px; /* inner controls, e.g. a tick inside a chip */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+
+  /* spacing */
+  --sp-1: 0.4rem;
+  --sp-2: 0.65rem;
+  --sp-3: 1rem;
+  --sp-4: 1.4rem;
+
+  width: min(100%, 780px);
+  margin: 0 auto;
+  animation: rise 0.5s var(--ease) both;
+}
+
+/* One accent per tool, matching its card on the home grid. */
+.tool[data-accent="teal"] {
+  --accent: #0d9488;
+  --accent-soft: rgba(13, 148, 136, 0.12);
+}
+
+.tool[data-accent="amber"] {
+  --accent: #b45309;
+  --accent-soft: rgba(245, 158, 11, 0.16);
+}
+
+.tool[data-accent="rose"] {
+  --accent: #be123c;
+  --accent-soft: rgba(244, 63, 94, 0.11);
+}
+
+.tool[data-accent="sky"] {
+  --accent: #0369a1;
+  --accent-soft: rgba(14, 165, 233, 0.13);
+}
+
+.tool[data-accent="emerald"] {
+  --accent: #047857;
+  --accent-soft: rgba(16, 185, 129, 0.13);
+}
+
+.tool[data-accent="lime"] {
+  --accent: #4d7c0f;
+  --accent-soft: rgba(132, 204, 22, 0.16);
+}
+
+.tool[data-accent="fuchsia"] {
+  --accent: #a21caf;
+  --accent-soft: rgba(217, 70, 239, 0.14);
+}
+
+/* The one neutral on the grid. Every hue near the others was already spoken
+   for, and a developer utility reads well in slate rather than competing with
+   the coloured tools around it. */
+.tool[data-accent="slate"] {
+  --accent: #475569;
+  --accent-soft: rgba(100, 116, 139, 0.16);
+}
+
+/* ---------- page header ---------- */
+
+.tool-head h1 {
+  margin: var(--sp-2) 0 0.25rem;
+  font-size: clamp(1.45rem, 3vw, 1.9rem);
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+}
+
+.tool-sub {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: var(--fs-body);
+}
+
+/* ---------- text primitives ---------- */
+
+/* One heading style for every section on every tool. Same size, weight and
+   tracking everywhere, so they read as one rank. */
+.tool .heading {
+  margin: 0;
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.tool .meta {
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-500);
+}
+
+.tool .tag {
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.tool .kbd {
+  font-family: inherit;
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  color: var(--ink-500);
+  white-space: nowrap;
+}
+
+/* ---------- cards ---------- */
+
+.tool .card {
+  margin-top: var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: rgba(255, 255, 255, 0.86);
+  overflow: hidden;
+}
+
+.tool .card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--line);
+  background: rgba(246, 243, 255, 0.5);
+}
+
+.tool .card-head-button {
+  border-width: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.tool .card-head-button:hover {
+  background: rgba(246, 243, 255, 0.7);
+}
+
+.tool .card-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  margin-left: auto;
+}
+
+.tool .card-body {
+  padding: var(--sp-3);
+}
+
+/* A result card wears the accent so a finished answer stands apart from the
+   form that produced it. */
+.tool .card-result {
+  border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+  animation: rise 0.35s var(--ease) both;
+}
+
+.tool .card-result .card-head {
+  background: var(--accent-soft);
+}
+
+.tool .card-result .heading {
+  color: var(--accent);
+}
+
+/* Blocks stack inside a card, separated by a hairline rather than a gap, so a
+   form reads as one panel instead of loose rows. */
+.tool .block {
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+}
+
+.tool .block + .block {
+  border-top: 1px solid var(--line);
+}
+
+.tool .block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+/* A block header that opens and closes its own contents. */
+.tool .block-head-button {
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Whatever the header ends with - a count or a tag - sits hard right. */
+.tool .block-head-button > :last-child {
+  margin-left: auto;
+}
+
+.tool .block-head-button:hover .heading,
+.tool .block-head-button:hover .twisty {
+  color: var(--accent);
+}
+
+/* Collapsing hides the contents without unmounting them, so a half-typed value
+   is still there when the section is opened again. */
+.tool .block[data-collapsed] > :not(.block-head) {
+  display: none;
+}
+
+/* ---------- twisty ---------- */
+
+.tool .twisty {
+  display: grid;
+  place-items: center;
+  color: var(--ink-500);
+}
+
+.tool .twisty .icon {
+  width: 13px;
+  height: 13px;
+  transition: transform 0.18s var(--ease);
+}
+
+/* Every collapsible header here is a button carrying aria-expanded, so one
+   rule turns the chevron wherever it appears. */
+.tool [aria-expanded="true"] .twisty .icon {
+  transform: rotate(90deg);
+}
+
+/* ---------- fields ---------- */
+
+.tool .field {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  border-radius: var(--r-md);
+  background: #fff;
+  color: var(--ink-900);
+  font: inherit;
+  font-size: var(--fs-body);
+  outline: none;
+  transition:
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+}
+
+.tool .field::placeholder {
+  color: #9a92ad;
+}
+
+.tool .field:focus {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.tool .field-area {
+  min-height: 96px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+/* Dashed means "this adds something", which separates it from the ordinary
+   inputs around it. */
+.tool .field-dashed {
+  border-style: dashed;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.tool .field-dashed:focus {
+  border-style: solid;
+}
+
+.tool .row {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+/* ---------- buttons ---------- */
+
+.tool .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color 0.18s var(--ease),
+    background 0.18s var(--ease),
+    color 0.18s var(--ease);
+}
+
+.tool .btn .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.tool .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tool .btn-quiet {
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ink-700);
+}
+
+.tool .btn-quiet:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent);
+}
+
+.tool .btn-quiet[data-copied] {
+  border-color: #047857;
+  color: #047857;
+}
+
+.tool .btn-danger:hover:not(:disabled) {
+  border-color: rgba(220, 38, 38, 0.4);
+  color: var(--danger);
+}
+
+.tool .btn-primary {
+  padding: 0.55rem 1.1rem;
+  border: 1px solid transparent;
+  background: var(--accent);
+  color: #fff;
+}
+
+.tool .btn-primary:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+/* ---------- action bar ---------- */
+
+.tool .bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-top: 1px solid var(--line);
+  background: rgba(246, 243, 255, 0.5);
+}
+
+.tool .bar-end {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-left: auto;
+}
+
+.tool .select {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.tool .select select {
+  padding: 0.42rem 0.55rem;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  border-radius: var(--r-sm);
+  background: #fff;
+  color: var(--ink-700);
+  font: inherit;
+  font-size: var(--fs-ui);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------- output and alerts ---------- */
+
+.tool .alert {
+  margin: var(--sp-3) 0 0;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: var(--r-md);
+  background: rgba(254, 226, 226, 0.6);
+  color: #b91c1c;
+  font-size: var(--fs-body);
+}
+
+.tool .output {
+  margin: 0;
+  padding: var(--sp-3);
+  /* Line breaks in the source survive into the answer. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: var(--fs-out);
+  line-height: 1.7;
+  color: var(--ink-900);
+}
+
+/* Source formats read better in a mono face - the point of asking for them is
+   to copy the raw text out. */
+.tool .output-code,
+.tool .output[data-format="markdown"],
+.tool .output[data-format="html"] {
+  font-family: "Cascadia Code", Consolas, "SF Mono", monospace;
+  font-size: var(--fs-body);
+  line-height: 1.65;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool,
+  .tool .card-result,
+  .tool .twisty .icon {
+    animation: none;
+    transition: none;
+  }
+}

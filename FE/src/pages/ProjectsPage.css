@@ -1,0 +1,287 @@
+/* ---------- projects screen ---------- */
+
+.projects {
+  --accent: var(--violet-700);
+  --accent-soft: rgba(139, 92, 246, 0.12);
+
+  width: min(100%, 760px);
+  margin: 0 auto;
+  animation: rise 0.5s var(--ease) both;
+}
+
+.projects[data-accent="emerald"] {
+  --accent: #047857;
+  --accent-soft: rgba(16, 185, 129, 0.13);
+}
+
+.projects-head h1 {
+  margin: 0.9rem 0 0.3rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+}
+
+.projects-sub {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 0.95rem;
+}
+
+/* ---------- add form ---------- */
+
+.project-add {
+  display: flex;
+  gap: 0.6rem;
+  margin: 1.4rem 0 1.2rem;
+}
+
+.project-add input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink-900);
+  outline: none;
+  transition:
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+}
+
+.project-add input::placeholder {
+  color: #9a92ad;
+}
+
+.project-add input:focus {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.project-add button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0 1.15rem;
+  border: none;
+  border-radius: 14px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.project-add button:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.project-add button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- groups ---------- */
+
+.projects-group + .projects-group {
+  margin-top: 1.5rem;
+}
+
+.projects-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.6rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+}
+
+.projects-group-title .icon {
+  width: 13px;
+  height: 13px;
+  color: var(--accent);
+}
+
+/* ---------- rows ---------- */
+
+.project-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.project-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.72rem 0.85rem;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.82);
+  transition:
+    border-color 0.2s var(--ease),
+    background 0.2s var(--ease);
+}
+
+.project-row:hover {
+  border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+  background: #fff;
+}
+
+/* A pinned row carries the accent on its left edge, so the grouping is still
+   readable if the headings scroll out of view. */
+.project-row[data-pinned] {
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 55%, #fff);
+}
+
+/* ---------- pin ---------- */
+
+.project-pin {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #b9b1cc;
+  cursor: pointer;
+}
+
+.project-pin:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.project-pin[aria-pressed="true"] {
+  color: var(--accent);
+}
+
+.project-pin .icon {
+  width: 17px;
+  height: 17px;
+  transition: transform 0.2s var(--ease);
+}
+
+.project-pin:hover .icon {
+  transform: rotate(-12deg);
+}
+
+/* ---------- name ---------- */
+
+.project-name,
+.project-name-input {
+  min-width: 0;
+  width: 100%;
+  text-align: left;
+  font-size: 0.96rem;
+  color: var(--ink-900);
+}
+
+.project-name {
+  border: none;
+  background: transparent;
+  padding: 0.2rem 0.25rem;
+  border-radius: 7px;
+  cursor: text;
+  overflow-wrap: anywhere;
+}
+
+.project-row[data-pinned] .project-name {
+  font-weight: 600;
+}
+
+.project-name:hover {
+  background: rgba(124, 58, 237, 0.06);
+}
+
+.project-name-input {
+  padding: 0.2rem 0.25rem;
+  border: none;
+  border-bottom: 1.5px solid var(--accent);
+  border-radius: 0;
+  background: transparent;
+  outline: none;
+}
+
+/* ---------- delete ---------- */
+
+.project-delete {
+  display: grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 0.5rem;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #b9b1cc;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.project-delete:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+/* One click arms, the second removes. */
+.project-delete[data-armed] {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* ---------- notes, empty and error states ---------- */
+
+.projects-note {
+  margin: 0.5rem 0;
+  font-size: 0.86rem;
+  color: var(--ink-500);
+}
+
+.projects-error {
+  margin: 0 0 0.9rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 12px;
+  background: rgba(254, 226, 226, 0.6);
+  color: #b91c1c;
+  font-size: 0.86rem;
+}
+
+.projects-empty {
+  padding: 2.2rem 1.5rem;
+  border: 1px dashed rgba(124, 58, 237, 0.22);
+  border-radius: 16px;
+  text-align: center;
+  color: var(--ink-500);
+  font-size: 0.9rem;
+}
+
+.projects-empty-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink-700);
+}
+
+.projects-empty p:last-child {
+  margin: 0 auto;
+  max-width: 40ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects,
+  .project-pin .icon {
+    animation: none;
+    transition: none;
+  }
+}

@@ -1,0 +1,48 @@
+# Render blueprint for the API. The frontend is a static build and is hosted
+# separately (Cloudflare Pages / Vercel / Netlify), so it is not described here.
+#
+# Every secret below is marked sync: false, which means Render prompts for it
+# rather than storing it in this file - this blueprint is safe to commit.
+services:
+  - type: web
+    name: my-tools-api
+    runtime: node
+    plan: free
+    rootDir: BE
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      # Not optional. utils/secrets.js makes a missing JWT_SECRET or
+      # PIN_INDEX_SECRET fatal in production, but silently generates a random
+      # one otherwise - which would lock every account out of PIN login on
+      # each restart, quietly. This turns that into a refusal to boot.
+      - key: NODE_ENV
+        value: production
+
+      # Copy this one across from your local .env by hand. A fresh value
+      # orphans every stored PIN blind index and locks all accounts out of
+      # PIN login, with no error that explains why.
+      - key: PIN_INDEX_SECRET
+        sync: false
+
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+
+      # The deployed frontend URL, e.g. https://my-tools.pages.dev
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+      # Without this, anyone who finds the URL can open an account and spend
+      # the Gemini quota.
+      - key: SIGNUP_CODE
+        sync: false
+
+      - key: JWT_EXPIRES_IN
+        value: 1h
+      - key: GEMINI_MODEL
+        value: gemini-3.6-flash
